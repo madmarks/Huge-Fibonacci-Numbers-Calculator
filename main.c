@@ -29,6 +29,8 @@ void print_fibonacci(uint64_t, const uint8_t * const, uint64_t);
  * 
  * F_1038394 for less than 5 minutes on virtual machine. (Release mode)
  * 
+ * 
+ * ./fibonacci > result.txt
  */
 int main() {
     
@@ -121,8 +123,6 @@ int main() {
     
     // ((result_len + 1) / 2) because 2 decimal digits are stored in one byte
     uint64_t result_len_in_bytes = (uint64_t) ((result_len + 1) / 2);
-
-    reverse_array(result_ptr, result_len_in_bytes, sizeof (uint8_t));
 
     printf("Max found ");
     print_fibonacci((uint64_t) (mrhex_n - 1), (uint8_t *)result_ptr, result_len_in_bytes);
@@ -326,16 +326,18 @@ void print_fibonacci(uint64_t n, const uint8_t * const fib_ptr, uint64_t len)
 {
     printf("Fibonacci number F_%"PRIu64" = ", n);
     
-    for(uint64_t i = 0; i < len; i++)
+    uint64_t i = (uint64_t)(len - 1);
+    
+    if((*(fib_ptr + i) >> 4) != 0)
+        printf("%c", (*(fib_ptr + i) >> 4) ^ 0x30);
+    
+    printf("%c", (*(fib_ptr + i) & 0x0F) ^ 0x30);
+    
+    while(i > (uint64_t)0)
     {
-        if(i == 0 && (*fib_ptr >> 4) == 0)
-        {
-            printf("%c", *fib_ptr + 0x30);
-            continue;
-        }
-        
-        printf("%c", (*(fib_ptr + i) >> 4) + 0x30);
-        printf("%c", (*(fib_ptr + i) & 0x0F) + 0x30);
+        i--;
+        printf("%c", (*(fib_ptr + i) >> 4) ^ 0x30);
+        printf("%c", (*(fib_ptr + i) & 0x0F) ^ 0x30);
     }
     
     printf("\n");
